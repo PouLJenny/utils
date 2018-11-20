@@ -4,8 +4,7 @@ import java.beans.BeanInfo;
 import java.beans.Introspector;
 import java.beans.PropertyDescriptor;
 import java.lang.reflect.Method;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 public class BeanUtils {
 
@@ -39,5 +38,29 @@ public class BeanUtils {
 
     }
 
+	/**
+	 * 给bean list的属性添加值
+	 * @param o
+	 * @param propertyName
+	 * @param value
+	 * @param <T>
+	 */
+    public static <T> void  addListValue(Object o, String propertyName, T value) {
+        Object fieldValue = ReflectionUtils.getFieldValue(o, propertyName);
+        if (fieldValue == null) {
+            synchronized (o) {
+                if (fieldValue == null) {
+                    fieldValue = new ArrayList<T>();
+                }
+            }
+        }
+        if (!(fieldValue instanceof List)) {
+	        throw new IllegalArgumentException("bean的属性不是list");
+        }
+	    List fieldValueL = (List) fieldValue;
+	    // 不做重复校验
+	    fieldValueL.add(value);
+        ReflectionUtils.setFieldValue(o,propertyName,fieldValueL);
+    }
 
 }
