@@ -262,6 +262,20 @@ public class FileUtil {
 		return convertBase64(new File(filePath));
 	}
 
+//	public static boolean magicNumIsEqual(String magicNum,InputStream stream) {
+//		InputStream inputStream = prepareToCheckMagic(stream);
+//
+//	}
+
+	public static InputStream prepareToCheckMagic(InputStream stream) {
+		if (stream.markSupported()) {
+			return stream;
+		}
+		// we used to process the data via a PushbackInputStream, but user code could provide a too small one
+		// so we use a BufferedInputStream instead now
+		return new BufferedInputStream(stream);
+	}
+
 	public static void main(String[] args) throws IOException {
 		deleteFile("D:\\test");
 		File IDPictureF = new File("D:\\test\\rename\\id_card.png");
