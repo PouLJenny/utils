@@ -4,11 +4,9 @@ import java.util.*;
 import java.util.Map.Entry;
 
 /**
- * 
  * 数学类的工具类
- * 
- * @author 杨霄鹏 2017年4月7日 上午9:46:14
  *
+ * @author 杨霄鹏 2017年4月7日 上午9:46:14
  */
 
 public class MathUtil {
@@ -19,11 +17,9 @@ public class MathUtil {
 
     /**
      * 冥运算函数 b^n
-     * 
-     * @param b
-     *            底数
-     * @param n
-     *            指数
+     *
+     * @param b 底数
+     * @param n 指数
      * @return 结果
      */
     public static long exponent(int b, int n) {
@@ -46,11 +42,9 @@ public class MathUtil {
 
     /**
      * 四舍五入运算，可以精确到小数点后几位进行四舍五入运算
-     * 
-     * @param a
-     *            待计算的参数
-     * @param b
-     *            精确到小数点后几位，如果是0的话就是精确到小数点第0位，即不保留小数点后边的值
+     *
+     * @param a 待计算的参数
+     * @param b 精确到小数点后几位，如果是0的话就是精确到小数点第0位，即不保留小数点后边的值
      * @return
      */
     public static double round(double a, int b) {
@@ -70,9 +64,10 @@ public class MathUtil {
         return result;
     }
 
-    
+
     /**
      * 计算整形数的二进制原码表示
+     *
      * @param a
      * @return
      */
@@ -95,71 +90,74 @@ public class MathUtil {
 
         return sb.reverse().toString();
     }
-    
-    
+
+
     /**
      * 概论中奖算法
+     *
      * @param prizePool 奖池 中奖概率
      * @return 中奖人
      */
-    public static String probabilityGet(Map<String,Integer> prizePool) {
-        
-        Set<Entry<String,Integer>> entrySet = prizePool.entrySet();
+    public static String probabilityGet(Map<String, Integer> prizePool) {
+
+        Set<Entry<String, Integer>> entrySet = prizePool.entrySet();
         Iterator<Entry<String, Integer>> iterator = entrySet.iterator();
-        
+
         List<String> pool = new ArrayList<String>();
         int s = 0;
         int e = 0;
         int max = 0;
         // 奖池赋值初始化
         while (iterator.hasNext()) {
-            
+
             Entry<String, Integer> next = iterator.next();
             String key = next.getKey();
             Integer value = next.getValue();
             max += value;
-            
+
             if (max > 100) {
                 throw new IllegalArgumentException("总概率不能大于100！");
             }
-            
+
             for (e = s + value; s < e; s++) {
                 pool.add(key);
             }
-            
+
         }
-        
+
         if (max < 100) {
-            
-            for (;s < 100; s++) {
+
+            for (; s < 100; s++) {
                 pool.add("");
             }
-            
+
         }
-        
+
         // 打乱集合排序
         Collections.shuffle(pool);
-        
+
         // 随机[0,100)的一个数
-        int luckyMan = selectForm(0, 100);        
-        
+        int luckyMan = selectForm(0, 100);
+
         return pool.get(luckyMan);
     }
-    
+
     /**
      * 获取[lowerValue,upperValue) 之间的整数
+     *
      * @param lowerValue
      * @param upperValue
      * @return
      */
-    public static  Integer selectForm(int lowerValue, int upperValue) {
+    public static Integer selectForm(int lowerValue, int upperValue) {
         int choices = upperValue - lowerValue;
-        return (int)Math.floor(Math.random() * choices + lowerValue);
+        return (int) Math.floor(Math.random() * choices + lowerValue);
     }
 
 
     /**
      * 判断是否是偶数
+     *
      * @param num
      * @return
      */
@@ -171,5 +169,43 @@ public class MathUtil {
         }
     }
 
+    /**
+     * 给定一个数字区间按照分组大小进行分组
+     * 返回每个组的数字区间
+     * @param from
+     * @param to
+     * @param groupSize
+     * @return
+     */
+    public static List<NumRange> group(int from, int to, int groupSize) {
+        if (groupSize < 1) {
+            throw new IllegalArgumentException("groupSize必须为正数，实际传入的值[" + groupSize + "]");
+        }
+        if (from > to) {
+            int temp = from;
+            from = to;
+            to = temp;
+        }
+        int length = to - from + 1;
+        if (from == to || length <= groupSize) {
+            List<NumRange> numRanges = new ArrayList<>(1);
+            numRanges.add(new NumRange(from, to));
+            return numRanges;
+        }
+
+        int groupCount = length / groupSize;
+        int remaining = length % groupSize;
+
+        List<NumRange> groupList = new ArrayList<>(groupCount + 1);
+        for (int i = 1; i <= groupCount; i++) {
+            groupList.add(new NumRange(from + groupSize * (i - 1), from - 1 + groupSize * i));
+        }
+
+        if (remaining != 0) {
+            groupList.add(new NumRange(from + groupSize * (groupCount), from + groupSize * (groupCount) + remaining - 1));
+        }
+
+        return groupList;
+    }
 
 }

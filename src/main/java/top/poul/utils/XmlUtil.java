@@ -46,5 +46,20 @@ public class XmlUtil {
 		return result;
 	}
 
+	/**
+	 * 翻译xml中的所有的实体字符
+	 * @param xml
+	 * @return
+	 */
+	public static String tanslateCharacterEntities (String xml) {
+		xml = xml.replaceAll("&ensp;"," ");
+		xml = xml.replaceAll("&emsp;"," ");
+		xml = xml.replaceAll("&nbsp;"," ");
+		xml = xml.replaceAll("&lt;","<");
+		xml = xml.replaceAll("&gt;",">");
+		xml = xml.replaceAll("&amp;","&");
+		xml = xml.replaceAll("&quot;","\"");
 
+		return xml;
+	}
 }

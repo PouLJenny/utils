@@ -1,7 +1,7 @@
 package top.poul.utils;
 
 import java.util.ArrayList;
-import java.util.Collections;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -22,17 +22,21 @@ public class RegexpUtil {
      * @return
      */
     public static String[] getMathes(String content, Pattern pattern) {
-        Matcher matcher = pattern.matcher(content);
-        ArrayList<String> result = new ArrayList<>();
-        while (matcher.find()) {
-            result.add(matcher.group());
-        }
-        if (result.isEmpty()) {
+        List<String> result = getMathesList(content, pattern);
+        if (result == null) {
             return null;
         }
         return result.toArray(new String[result.size()]);
     }
 
+    public static List<String> getMathesList(String content, Pattern pattern) {
+        Matcher matcher = pattern.matcher(content);
+        ArrayList<String> result = new ArrayList<>();
+        while (matcher.find()) {
+            result.add(matcher.group());
+        }
+        return result;
+    }
 
 
 }

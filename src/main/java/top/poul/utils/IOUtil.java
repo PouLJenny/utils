@@ -128,6 +128,15 @@ public class IOUtil {
         return Arrays.toString(bytes).replaceAll("[\\[|\\]|,]", "");
     }
 
+    public static InputStream getMarkSupport(InputStream stream) {
+        if (stream.markSupported()) {
+            return stream;
+        }
+        // we used to process the data via a PushbackInputStream, but user code could provide a too small one
+        // so we use a BufferedInputStream instead now
+        return new BufferedInputStream(stream);
+    }
+
     public static void main(String[] args) throws IOException {
 //        String path = "D:\\developer workspace\\nginx\\nginx-1.13.2\\data\\images\\1.jpg";
         String path = "D:\\dev_workspace\\nginx\\nginx-1.13.2\\data\\images\\timg.jpg";

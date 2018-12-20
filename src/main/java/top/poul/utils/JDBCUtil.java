@@ -59,13 +59,26 @@ public class JDBCUtil {
      */
     public static Connection getConnectionFromDruid(String url,String user, String password,DataBaseClassName className)
             throws SQLException{
+        DruidDataSource druidDataSource = getDruidDataSource(url, user, password, className);
+        return druidDataSource.getConnection();
+    }
+
+    /**
+     * 获取druid数据库连接池
+     * @param url        数据库连接地址
+     * @param user       数据库账号
+     * @param password   数据库密码
+     * @param className  数据库驱动class全限定名
+     * @return
+     */
+    public static DruidDataSource getDruidDataSource(String url,String user, String password,DataBaseClassName className) {
         DruidDataSource druidDataSource = new DruidDataSource();
         druidDataSource.setDriverClassName(className.getQualifiedName());
         druidDataSource.setUrl(url);
         druidDataSource.setUsername(user);
         druidDataSource.setPassword(password);
 
-        return druidDataSource.getConnection();
+        return druidDataSource;
     }
 
     /**

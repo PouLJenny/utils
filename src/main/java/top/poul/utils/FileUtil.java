@@ -267,14 +267,7 @@ public class FileUtil {
 //
 //	}
 
-	public static InputStream prepareToCheckMagic(InputStream stream) {
-		if (stream.markSupported()) {
-			return stream;
-		}
-		// we used to process the data via a PushbackInputStream, but user code could provide a too small one
-		// so we use a BufferedInputStream instead now
-		return new BufferedInputStream(stream);
-	}
+
 
 	public static void main(String[] args) throws IOException {
 		deleteFile("D:\\test");
