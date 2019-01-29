@@ -139,14 +139,23 @@ public class IOUtil {
 
     public static void main(String[] args) throws IOException {
 //        String path = "D:\\developer workspace\\nginx\\nginx-1.13.2\\data\\images\\1.jpg";
-        String path = "D:\\dev_workspace\\nginx\\nginx-1.13.2\\data\\images\\timg.jpg";
-        File file = new File(path);
+//        String path = "D:\\dev_workspace\\nginx\\nginx-1.13.2\\data\\images\\timg.jpg";
+//        File file = new File(path);
 
 //        byte[] bytes = cutBegin(new FileInputStream(file), 3);
 //        char[] chars = encodeHex(bytes);
 //        System.out.println(new String(chars).toUpperCase());
-        String s = byteArrayString(file);
+//        String s = byteArrayString(file);
+//        System.out.println(s);
+
+
+        String str = "吉";
+
+        byte[] gbks = str.getBytes("GBK");
+        String s = byteArrayString(gbks);
+        char[] chars = encodeHex(gbks);
         System.out.println(s);
+        System.out.println(new String(chars).toUpperCase());
 
     }
 

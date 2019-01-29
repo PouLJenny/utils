@@ -42,7 +42,7 @@ public enum FileMagicNum {
     PST("2142444E"),
 
     /** doc;xls;dot;ppt;xla;ppa;pps;pot;msi;sdw;db */
-    OLE2("0xD0CF11E0A1B11AE1"),
+    OLE2("D0CF11E0A1B11AE1"),
 
     /** Microsoft Word/Excel */
     XLS_DOC("D0CF11E0A1B11AE1"),
