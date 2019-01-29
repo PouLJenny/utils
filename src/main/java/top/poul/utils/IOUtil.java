@@ -76,9 +76,9 @@ public class IOUtil {
             if (input != null) {
                 input.close();
             }
-            if (baos != null) {
-                baos.close();
-            }
+//            if (baos != null) {
+            baos.close();
+//            }
         }
     }
 
@@ -126,6 +126,19 @@ public class IOUtil {
     public static String byteArrayString(File file) throws IOException {
         byte[] bytes = bytes(new FileInputStream(file));
         return Arrays.toString(bytes).replaceAll("[\\[|\\]|,]", "");
+    }
+
+    /**
+     * 转换成字节数据输入流
+     * @param stream
+     * @return
+     */
+    public static ByteArrayInputStream convert2ByteArray(InputStream stream) throws IOException{
+        if (stream instanceof ByteArrayInputStream) {
+            return (ByteArrayInputStream)stream;
+        }
+        byte[] bytes = bytes(stream);
+        return new ByteArrayInputStream(bytes);
     }
 
     public static InputStream getMarkSupport(InputStream stream) {
