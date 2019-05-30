@@ -37,4 +37,13 @@ public class DateUtils {
 		}
 	};
 
+
+	/**
+	 * 获取当前日期
+	 * @return
+	 */
+	public static Date now() {
+		return Date.from(Instant.now());
+	}
+
 }

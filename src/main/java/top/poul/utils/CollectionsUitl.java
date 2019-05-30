@@ -1,5 +1,6 @@
 package top.poul.utils;
 
+import java.util.Arrays;
 import java.util.Collection;
 
 /**
@@ -21,10 +22,26 @@ public class CollectionsUitl {
         return c == null || c.isEmpty();
         
     }
-    
-    
-    
-    
-    
-    
+
+    /**
+     * 集合转数组
+     * @param c
+     * @param <E>
+     * @return
+     */
+    public static <E> E[] toArray(Collection<E> c,Class<? extends E[]> cls) {
+        if (isEmpty(c)) {
+            return null;
+        }
+        Object[] result = new Object[c.size()];
+        int i = 0;
+        for (E item : c) {
+            result[i] = item;
+            i++;
+        }
+        return Arrays.copyOf(result, c.size(), cls);
+    }
+
+
+
 }
