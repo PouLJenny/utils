@@ -5,6 +5,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -90,6 +91,24 @@ public class HttpUtil {
 		}
 
 		return result.toString();
+	}
+
+	public static Map<String, String> getResponseHeaders(final HttpServletResponse response) {
+		Collection<String> headerNames = response.getHeaderNames();
+		final Map<String, String> result = new LinkedHashMap<>();
+		Optional.ofNullable(headerNames).ifPresent((headerNs)->{
+			headerNs.forEach(headerName->{
+				result.put(headerName,response.getHeader(headerName));
+			});
+		});
+		return result;
+	}
+
+	public static void logResponseDetail(final HttpServletResponse response) {
+		Map<String, String> responseHeaders = getResponseHeaders(response);
+		responseHeaders.forEach((k,v)->{
+			logger.info("response header => {} : {}",k,v);
+		});
 	}
 
 	/**
