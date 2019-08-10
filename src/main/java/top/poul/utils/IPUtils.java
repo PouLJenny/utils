@@ -1,7 +1,5 @@
 package top.poul.utils;
 
-import com.sun.org.apache.xpath.internal.SourceTree;
-
 import java.net.InetAddress;
 import java.net.NetworkInterface;
 import java.util.Enumeration;

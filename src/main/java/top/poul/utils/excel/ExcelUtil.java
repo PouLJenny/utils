@@ -6,7 +6,6 @@ import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.usermodel.WorkbookFactory;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
-import top.poul.utils.FileUtil;
 
 import java.io.*;
 import java.util.ArrayList;
@@ -14,6 +13,19 @@ import java.util.List;
 import java.util.Objects;
 
 public class ExcelUtil {
+
+    private ExcelUtil() {
+    }
+
+
+    /**
+     * 获取Excel头部上的列名
+     * @param index
+     * @return
+     */
+    public static String getColumnName(int index) {
+        return String.valueOf((char)(65 + index));
+    }
 
 
     /**
