@@ -1,10 +1,8 @@
 package top.poul.utils.excel;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
-import org.apache.poi.ss.usermodel.Row;
-import org.apache.poi.ss.usermodel.Sheet;
-import org.apache.poi.ss.usermodel.Workbook;
-import org.apache.poi.ss.usermodel.WorkbookFactory;
+import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 import java.io.*;
@@ -53,7 +51,8 @@ public class ExcelUtil {
                 short lastCellNum = row.getLastCellNum();
                 ArrayList<String> rowData = new ArrayList<>(lastCellNum  +  1);
                 for (int ci = firstCellNum;ci < lastCellNum; ci++) {
-                    String stringCellValue = row.getCell(ci).getStringCellValue();
+                    Cell cell = row.getCell(ci);
+                    String stringCellValue = cell == null ? StringUtils.EMPTY : cell.getStringCellValue();
                     rowData.add(ci,stringCellValue);
                 }
 
