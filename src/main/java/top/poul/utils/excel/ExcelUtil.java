@@ -122,7 +122,7 @@ public class ExcelUtil {
     }
 
 
-    private static Workbook getWorkbook(ExcelType type) {
+    public static Workbook getWorkbook(ExcelType type) {
         if (type == null) {
             throw new NullPointerException();
         }
