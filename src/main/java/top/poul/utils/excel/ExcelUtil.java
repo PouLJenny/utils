@@ -6,9 +6,7 @@ import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 import java.io.*;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 public class ExcelUtil {
 
@@ -16,14 +14,14 @@ public class ExcelUtil {
     }
 
 
-    /**
-     * 获取Excel头部上的列名
-     * @param index
-     * @return
-     */
-    public static String getColumnName(int index) {
-        return String.valueOf((char)(65 + index));
-    }
+//    /**
+//     * 获取Excel头部上的列名
+//     * @param index
+//     * @return
+//     */
+//    public static String getColumnName(int index) {
+//        return String.valueOf((char)(65 + index));
+//    }
 
 
     /**
@@ -137,6 +135,38 @@ public class ExcelUtil {
         return workbook;
     }
 
+    /**
+     * EXCEL
+     */
+    private static char[] COL_BASE = {'A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z'};
+    /**
+     * 获取excel中列的名字 A B C
+     * @param colIndex 列序列 begin from zero
+     * @return
+     */
+    public static String getColumnName(int colIndex) {
+        if (colIndex < 0) {
+            throw new IllegalArgumentException("colIndex can not < 0");
+        }
+
+        Stack<Character> characters = new Stack<>();
+        int i = (colIndex) % (COL_BASE.length);
+        characters.push(COL_BASE[i]);
+        colIndex += 1;
+        while (colIndex > COL_BASE.length) {
+            colIndex = colIndex / COL_BASE.length;
+            if (colIndex > COL_BASE.length) {
+                characters.push(COL_BASE[COL_BASE.length - 1]);
+            } else {
+                characters.push(COL_BASE[colIndex - 1]);
+            }
+        }
+        StringBuilder sb = new StringBuilder();
+        while (!characters.empty()) {
+            sb.append(characters.pop());
+        }
+        return sb.toString();
+    }
 
 
 
