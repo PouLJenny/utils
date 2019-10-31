@@ -25,6 +25,66 @@ public class ExcelUtil {
 
 
     /**
+     *
+     * @param is
+     * @param sheetNum      1 - base
+     * @param colNumStart   1 - base
+     * @param colNumEnd     1 - base
+     * @return
+     */
+    public static List<List<String>> readExcel(InputStream is,int sheetNum,int colNumStart,int colNumEnd) throws IOException {
+        if (colNumStart < colNumEnd) {
+            throw new IllegalArgumentException("colNumStart can not grete than colNumEnd");
+        }
+        if (colNumStart < 1) {
+            throw new IllegalArgumentException("colNumStart can not less 1");
+        }
+        if (sheetNum < 1) {
+            throw new IllegalArgumentException("sheetNum can not less 1");
+        }
+        if (colNumEnd < 1) {
+            throw new IllegalArgumentException("colNumEnd can not less 1");
+        }
+        sheetNum--;
+        colNumStart--;
+        colNumEnd--;
+        Workbook workbook = null;
+        try {
+            workbook = WorkbookFactory.create(is);
+            Sheet sheet = workbook.getSheetAt(sheetNum);
+            if (sheet == null) {
+                throw new IllegalArgumentException("sheet不存在");
+            }
+            int firstRowNum = sheet.getFirstRowNum();
+            int lastRowNum = sheet.getLastRowNum();
+            int width = colNumEnd - colNumStart + 1;
+            List<List<String>> result = new ArrayList<List<String>>(lastRowNum  + 1);
+            for (int ri = firstRowNum ;ri <= lastRowNum; ri++) {
+                Row row = sheet.getRow(ri);
+                ArrayList<String> rowData = new ArrayList<>(width);
+                for (int ci = colNumStart;ci <= colNumEnd; ci++) {
+                    Cell cell = row.getCell(ci);
+                    String stringCellValue = cell == null ? StringUtils.EMPTY : cell.getStringCellValue();
+                    rowData.add(ci,stringCellValue);
+                }
+                result.add(ri,rowData);
+            }
+            return result;
+        } catch (IOException e) {
+            // TODO 如果POI更换非4.0.0版本之后，请检查此处是否可用
+            if (Objects.equals("Your InputStream was neither an OLE2 stream, nor an OOXML stream",e.getMessage())) {
+                throw new IllegalArgumentException("请上传excel文件");
+            } else {
+                throw e;
+            }
+        } finally {
+            if (workbook != null) {
+                workbook.close();
+            }
+        }
+    }
+
+    /**
      * 读取excel为二维的String list
      * @param sheetName
      * @param is
