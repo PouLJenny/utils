@@ -33,7 +33,7 @@ public class ExcelUtil {
      * @return
      */
     public static List<List<String>> readExcel(InputStream is,int sheetNum,int colNumStart,int colNumEnd) throws IOException {
-        if (colNumStart < colNumEnd) {
+        if (colNumStart > colNumEnd) {
             throw new IllegalArgumentException("colNumStart can not grete than colNumEnd");
         }
         if (colNumStart < 1) {
