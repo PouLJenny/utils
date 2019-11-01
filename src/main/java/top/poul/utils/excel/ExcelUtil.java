@@ -14,18 +14,7 @@ public class ExcelUtil {
     }
 
 
-//    /**
-//     * 获取Excel头部上的列名
-//     * @param index
-//     * @return
-//     */
-//    public static String getColumnName(int index) {
-//        return String.valueOf((char)(65 + index));
-//    }
-
-
     /**
-     *
      * @param is
      * @param sheetNum      1 - base
      * @param colNumStart   1 - base
@@ -33,21 +22,10 @@ public class ExcelUtil {
      * @return
      */
     public static List<List<String>> readExcel(InputStream is,int sheetNum,int colNumStart,int colNumEnd) throws IOException {
-        if (colNumStart > colNumEnd) {
-            throw new IllegalArgumentException("colNumStart can not grete than colNumEnd");
-        }
-        if (colNumStart < 1) {
-            throw new IllegalArgumentException("colNumStart can not less 1");
-        }
         if (sheetNum < 1) {
             throw new IllegalArgumentException("sheetNum can not less 1");
         }
-        if (colNumEnd < 1) {
-            throw new IllegalArgumentException("colNumEnd can not less 1");
-        }
         sheetNum--;
-        colNumStart--;
-        colNumEnd--;
         Workbook workbook = null;
         try {
             workbook = WorkbookFactory.create(is);
@@ -57,19 +35,7 @@ public class ExcelUtil {
             }
             int firstRowNum = sheet.getFirstRowNum();
             int lastRowNum = sheet.getLastRowNum();
-            int width = colNumEnd - colNumStart + 1;
-            List<List<String>> result = new ArrayList<List<String>>(lastRowNum  + 1);
-            for (int ri = firstRowNum ;ri <= lastRowNum; ri++) {
-                Row row = sheet.getRow(ri);
-                ArrayList<String> rowData = new ArrayList<>(width);
-                for (int ci = colNumStart;ci <= colNumEnd; ci++) {
-                    Cell cell = row.getCell(ci);
-                    String stringCellValue = cell == null ? StringUtils.EMPTY : cell.getStringCellValue();
-                    rowData.add(ci,stringCellValue);
-                }
-                result.add(ri,rowData);
-            }
-            return result;
+            return extractRectangleStringValue(sheet, firstRowNum + 1, lastRowNum + 1, colNumStart, colNumEnd);
         } catch (IOException e) {
             // TODO 如果POI更换非4.0.0版本之后，请检查此处是否可用
             if (Objects.equals("Your InputStream was neither an OLE2 stream, nor an OOXML stream",e.getMessage())) {
@@ -80,6 +46,131 @@ public class ExcelUtil {
         } finally {
             if (workbook != null) {
                 workbook.close();
+            }
+        }
+    }
+
+    public static List<List<String>> readExcel(InputStream is,int sheetNum,
+                                               int rowNumStart,int rowNumEnd,
+                                               int colNumStart,int colNumEnd) throws IOException {
+        if (sheetNum < 1) {
+            throw new IllegalArgumentException("sheetNum can not less 1");
+        }
+        sheetNum--;
+        Workbook workbook = null;
+        try {
+            workbook = WorkbookFactory.create(is);
+            Sheet sheet = workbook.getSheetAt(sheetNum);
+            if (sheet == null) {
+                throw new IllegalArgumentException("sheet不存在");
+            }
+            return extractRectangleStringValue(sheet, rowNumStart, rowNumEnd, colNumStart, colNumEnd);
+        } catch (IOException e) {
+            // TODO 如果POI更换非4.0.0版本之后，请检查此处是否可用
+            if (Objects.equals("Your InputStream was neither an OLE2 stream, nor an OOXML stream",e.getMessage())) {
+                throw new IllegalArgumentException("请上传excel文件");
+            } else {
+                throw e;
+            }
+        } finally {
+            if (workbook != null) {
+                workbook.close();
+            }
+        }
+    }
+
+    /**
+     * 提取一个矩形区域的数据
+     * @param sheet
+     * @param rowNumStart    1 - base
+     * @param rowNumEnd      1 - base
+     * @param colNumStart    1 - base
+     * @param colNumEnd      1 - base
+     * @return
+     */
+    private static List<List<String>> extractRectangleStringValue(Sheet sheet,int rowNumStart,int rowNumEnd,
+                                                                  int colNumStart,int colNumEnd) {
+        if (rowNumStart > rowNumEnd) {
+            throw new IllegalArgumentException("rowNumStart can not grete than rowNumEnd");
+        }
+        if (rowNumStart < 1) {
+            throw new IllegalArgumentException("rowNumStart can not less 1");
+        }
+        if (rowNumEnd < 1) {
+            throw new IllegalArgumentException("rowNumEnd can not less 1");
+        }
+        rowNumStart--;
+        rowNumEnd--;
+        List<List<String>> result = new ArrayList<>(rowNumEnd - rowNumStart  + 1);
+        for ( int ri = rowNumStart ; ri <= rowNumEnd ; ri++) {
+            Row row = sheet.getRow(ri);
+            List<String> rowData = extractRowStringValue(row, colNumStart, colNumEnd);
+            result.add(rowData);
+        }
+        return result;
+    }
+
+    /**
+     * 提取一行的数据成String数组
+     * @param colNumStart  1 - base
+     * @param colNumEnd    1 - base
+     * @param row
+     * @return
+     */
+    private static List<String> extractRowStringValue(Row row, int colNumStart, int colNumEnd) {
+
+        if (colNumStart > colNumEnd) {
+            throw new IllegalArgumentException("colNumStart can not grete than colNumEnd");
+        }
+        if (colNumStart < 1) {
+            throw new IllegalArgumentException("colNumStart can not less 1");
+        }
+        if (colNumEnd < 1) {
+            throw new IllegalArgumentException("colNumEnd can not less 1");
+        }
+        colNumStart--;
+        colNumEnd--;
+
+        int width = colNumEnd - colNumStart + 1;
+        List<String> rowData = new ArrayList<>(width);
+        for (int ci = colNumStart;ci <= colNumEnd; ci++) {
+            if (row == null) {
+                rowData.add(StringUtils.EMPTY);
+            } else {
+                Cell cell = row.getCell(ci);
+                rowData.add(getCellStringValue(cell));
+            }
+        }
+        return rowData;
+    }
+
+    /**
+     * 从cell中获取String的值
+     * @param cell
+     * @return
+     */
+    private static String getCellStringValue(Cell cell) {
+        CellType cellType;
+        if (cell == null || (cellType = cell.getCellType()) == null) {
+            return StringUtils.EMPTY;
+        } else {
+            switch (cellType) {
+                case _NONE:
+                    return StringUtils.EMPTY;
+                case BLANK:
+                    return StringUtils.EMPTY;
+                case ERROR:
+                    return StringUtils.EMPTY;
+                case STRING:
+                    return StringUtils.defaultString(cell.getStringCellValue());
+                case BOOLEAN:
+                    return String.valueOf(cell.getBooleanCellValue());
+                case FORMULA:
+                    return StringUtils.defaultString(cell.getCellFormula());
+                case NUMERIC:
+                    return String.valueOf(cell.getNumericCellValue());
+                default:
+                    return StringUtils.EMPTY;
             }
         }
     }
@@ -99,10 +190,9 @@ public class ExcelUtil {
             if (sheet == null) {
                 throw new IllegalArgumentException("sheet"+sheetName+"不存在");
             }
-
             int firstRowNum = sheet.getFirstRowNum();
             int lastRowNum = sheet.getLastRowNum();
-            List<List<String>> result = new ArrayList<List<String>>(lastRowNum  + 1);
+            List<List<String>> result = new ArrayList<>(lastRowNum  + 1);
             for (int ri = firstRowNum ;ri <= lastRowNum; ri++) {
                 Row row = sheet.getRow(ri);
                 short firstCellNum = row.getFirstCellNum();
@@ -113,7 +203,6 @@ public class ExcelUtil {
                     String stringCellValue = cell == null ? StringUtils.EMPTY : cell.getStringCellValue();
                     rowData.add(ci,stringCellValue);
                 }
-
                 result.add(ri,rowData);
             }
             return result;
@@ -125,9 +214,6 @@ public class ExcelUtil {
                 throw e;
             }
         } finally {
-//			if (is != null) {
-//				is.close();
-//			}
             if (workbook != null) {
                 workbook.close();
             }
@@ -228,6 +314,13 @@ public class ExcelUtil {
         return sb.toString();
     }
 
+
+    public static void main(String[] args) throws Exception {
+        File file = new File("/Users/admin/Documents/测试统一阻断/测试必填项.xls");
+        FileInputStream fileInputStream = new FileInputStream(file);
+        List<List<String>> lists = readExcel(fileInputStream, 1, 1, 5);
+        System.out.println(lists);
+    }
 
 
 }
