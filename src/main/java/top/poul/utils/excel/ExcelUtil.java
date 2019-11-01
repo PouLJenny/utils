@@ -315,12 +315,4 @@ public class ExcelUtil {
     }
 
 
-    public static void main(String[] args) throws Exception {
-        File file = new File("/Users/admin/Documents/测试统一阻断/测试必填项.xls");
-        FileInputStream fileInputStream = new FileInputStream(file);
-        List<List<String>> lists = readExcel(fileInputStream, 1, 1, 5);
-        System.out.println(lists);
-    }
-
-
 }
