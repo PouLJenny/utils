@@ -16,7 +16,7 @@
 
         <lombock.version>1.16.22</lombock.version>
         <slf4j.version>1.7.25</slf4j.version>
-        <log4j2.version>2.11.0</log4j2.version>
+        <log4j2.version>2.13.3</log4j2.version>
         <druid-version>1.1.9</druid-version>
         <poi.version>4.0.0</poi.version>
         <pdfbox.version>2.0.6</pdfbox.version>
