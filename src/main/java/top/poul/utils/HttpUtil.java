@@ -148,17 +148,30 @@ public class HttpUtil {
 	public static String getHost(final String url) throws MalformedURLException {
 		int i = url.indexOf("://");
 		if (i > 0) {
-			String schema = url.substring(0, i + 3);
+			String scheme = url.substring(0, i + 3);
 			URL url1 = new URL(url);
 			String host = url1.getHost();
 			int port = url1.getPort();
 			if (port == 80 || port == -1) {
-				return schema + host;
+				return scheme + host;
 			} else {
-				return schema + host + ":" + port;
+				return scheme + host + ":" + port;
 			}
 		}
 		return null;
+	}
+
+	/**
+	 * 获取url的host
+	 * @param url
+	 * @return
+	 */
+	public static String determineHost(final String url) {
+		int i = url.indexOf("://");
+		String scheme = url.substring(0,i);
+		String substring = url.substring(i + 3);
+		String domain = substring.substring(0, substring.indexOf("/"));
+		return scheme + "://" + domain;
 	}
 
 
@@ -179,5 +192,7 @@ public class HttpUtil {
 
 		return "";
 	}
+
+
 
 }

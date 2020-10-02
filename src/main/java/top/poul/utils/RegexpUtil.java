@@ -1,9 +1,12 @@
 package top.poul.utils;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 /**
  * @author peng
@@ -21,15 +24,15 @@ public class RegexpUtil {
      * @param pattern
      * @return
      */
-    public static String[] getMathes(String content, Pattern pattern) {
-        List<String> result = getMathesList(content, pattern);
+    public static String[] getMatches(String content, Pattern pattern) {
+        List<String> result = getMatchesList(content, pattern);
         if (result == null) {
             return null;
         }
         return result.toArray(new String[result.size()]);
     }
 
-    public static List<String> getMathesList(String content, Pattern pattern) {
+    public static List<String> getMatchesList(String content, Pattern pattern) {
         Matcher matcher = pattern.matcher(content);
         ArrayList<String> result = new ArrayList<>();
         while (matcher.find()) {
@@ -38,5 +41,13 @@ public class RegexpUtil {
         return result;
     }
 
+
+
+    public static void main(String[] args) {
+       String str = "nihao[天,地]ddd";
+        Pattern compile = Pattern.compile("\\[.+]");
+        List<String> matchesList = getMatchesList(str, compile);
+        System.out.println(matchesList);
+    }
 
 }
