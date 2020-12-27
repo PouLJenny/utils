@@ -292,7 +292,7 @@ public class ExcelUtil {
      */
     public static String getColumnName(int colIndex) {
         if (colIndex < 0) {
-            throw new IllegalArgumentException("colIndex can not < 0");
+            throw new IllegalArgumentException("colIndex can not < 0,actual is " + colIndex);
         }
 
         Stack<Character> characters = new Stack<>();
